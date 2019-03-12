@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -e
+
+for script in /etc/rc.local.d/*; do
+  $script
+done
+
+exit 0
