@@ -1,0 +1,55 @@
+version: "3.6"
+
+services:
+  mpd:
+    build:
+      context: mpd
+    devices:
+      - "/dev/snd:/dev/snd"
+    ports:
+      - "6600:6600"
+      - "8060:8000"
+    volumes:
+      - ./mpd/music:/mpd/music
+      - ./mpd/conf:/mpd/conf
+      - ./mpd/data:/mpd/data
+      - ./mpd/playlists:/mpd/playlists
+
+  webpack:
+    build:
+      context: app
+      dockerfile: Dockerfile.webpack
+    command: yarn run watch
+    volumes:
+      - "./app:/app"
+      - "static:/app/priv/static"
+      - webpack_modules:/app/assets/node_modules
+
+  app:
+    build:
+      context: app
+      target: phoenix_base
+    command: mix phx.server
+    ports:
+      - "8001:8000"
+    environment:
+      PORT: 8000
+      MPD_HOST: mpd
+      MPD_PORT: 6600
+      LIVE_VIEW_SIGNING_SALT: "o+kavMBBDleckrFlKcFZ9IJCyzn2PSfI"
+    volumes:
+      - ./app/:/app
+      - "static:/app/priv/static"
+      - ./mpd/music:/media/music
+    depends_on:
+      - mpd
+      - webpack
+
+volumes:
+  static:
+    driver_opts:
+      device: "tmpfs"
+      type: "tmpfs"
+  mpd_data:
+  mpd_playlists:
+  webpack_modules:
