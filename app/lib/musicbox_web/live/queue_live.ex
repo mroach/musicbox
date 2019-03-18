@@ -36,12 +36,13 @@ defmodule MusicboxWeb.QueueLive do
   end
 
   defp put_status(socket) do
-    assign(socket, player: Player.status)
+    assign(socket, player: Player.status())
   end
 
   defp song_description(%{"Artist" => artist, "Title" => title}) do
     "#{artist} - #{title}"
   end
+
   defp song_description(%{"Title" => title}), do: title
   defp song_description(%{"file" => file}), do: file
   defp song_description(what), do: inspect(what)
@@ -50,8 +51,9 @@ defmodule MusicboxWeb.QueueLive do
     {seconds, _} = Integer.parse(seconds)
     duration(seconds)
   end
+
   defp duration(seconds) do
-    minutes = seconds / 60 |> floor
+    minutes = (seconds / 60) |> floor
     seconds = seconds - minutes * 60
     "#{minutes}:#{format_seconds(seconds)}"
   end

@@ -30,10 +30,10 @@ config :phoenix,
 config :paracusia,
   hostname: System.get_env("MPD_HOST"),
   password: System.get_env("MPD_PASS"),
-  port: System.get_env("MPD_PORT") |> String.to_integer,
+  port: System.get_env("MPD_PORT") |> String.to_integer(),
   retry_after: 100,
   max_retry_attempts: 3
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"

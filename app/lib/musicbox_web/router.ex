@@ -22,9 +22,9 @@ defmodule MusicboxWeb.Router do
 
     resources "/songs", SongController
 
-    live "/playback", PlaybackLive
-    live "/playlists", PlaylistsLive
-    live "/queue", QueueLive
+    live("/playback", PlaybackLive)
+    live("/playlists", PlaylistsLive)
+    live("/queue", QueueLive)
   end
 
   # Other scopes may use custom stacks.

@@ -51,21 +51,22 @@ defmodule MusicboxWeb.PlaylistsLive do
   end
 
   def handle_event("play_playlist", playlist, socket) do
-    Logger.debug "Playing playlist #{playlist}"
+    Logger.debug("Playing playlist #{playlist}")
     Player.play_playlist(playlist)
     {:noreply, socket}
   end
 
   defp put_status(socket) do
-    assign(socket, player: Player.status)
+    assign(socket, player: Player.status())
   end
 
   defp duration(seconds) when is_binary(seconds) do
     {seconds, _} = Integer.parse(seconds)
     duration(seconds)
   end
+
   defp duration(seconds) do
-    minutes = seconds / 60 |> floor
+    minutes = (seconds / 60) |> floor
     seconds = seconds - minutes * 60
     "#{minutes}:#{format_seconds(seconds)}"
   end

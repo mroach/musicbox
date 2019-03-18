@@ -41,8 +41,7 @@ defmodule Musicbox.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:paracusia, "~> 0.2.10"},
       {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"},
-
-      {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:phoenix_live_reload, "~> 1.2", only: :dev}
     ]
   end
 

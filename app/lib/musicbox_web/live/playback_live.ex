@@ -45,22 +45,22 @@ defmodule MusicboxWeb.PlaybackLive do
   end
 
   def handle_event("toggle", _value, socket) do
-    Player.toggle
+    Player.toggle()
     {:noreply, socket}
   end
 
   def handle_event("next", _value, socket) do
-    Player.next
+    Player.next()
     {:noreply, socket}
   end
 
   def handle_event("previous", _value, socket) do
-    Player.previous
+    Player.previous()
     {:noreply, socket}
   end
 
   defp put_status(socket) do
-    assign(socket, player: Player.status)
+    assign(socket, player: Player.status())
   end
 
   defp play_pause_icon(:play), do: "pause"
@@ -70,6 +70,7 @@ defmodule MusicboxWeb.PlaybackLive do
   defp song_description(%{"Artist" => artist, "Title" => title}) do
     "#{artist} - #{title}"
   end
+
   defp song_description(%{"Title" => title}), do: title
   defp song_description(%{"file" => file}), do: file
   defp song_description(nil), do: ""
@@ -78,8 +79,9 @@ defmodule MusicboxWeb.PlaybackLive do
     {seconds, _} = Integer.parse(seconds)
     duration(seconds)
   end
+
   defp duration(seconds) do
-    minutes = seconds / 60 |> floor
+    minutes = (seconds / 60) |> floor
     seconds = seconds - minutes * 60
     "#{minutes}:#{format_seconds(seconds)}"
   end

@@ -30,7 +30,7 @@ defmodule Musicbox.Player do
 
   @impl true
   def handle_cast({:play}, state) do
-    MpdClient.Playback.play
+    MpdClient.Playback.play()
 
     {:noreply, state}
   end
@@ -42,20 +42,21 @@ defmodule Musicbox.Player do
   end
 
   def handle_cast({:previous}, state) do
-    MpdClient.Playback.previous
+    MpdClient.Playback.previous()
     {:noreply, state}
   end
 
   def handle_cast({:next}, state) do
-    MpdClient.Playback.next
+    MpdClient.Playback.next()
     {:noreply, state}
   end
 
   def handle_cast({:toggle}, state) do
-    {:ok, %{state: pstate}} = MpdClient.Status.status
+    {:ok, %{state: pstate}} = MpdClient.Status.status()
+
     case pstate do
       :play -> pause()
-      :pause  -> play()
+      :pause -> play()
       :stop -> play()
       _ -> play()
     end
@@ -70,7 +71,7 @@ defmodule Musicbox.Player do
   end
 
   def handle_cast({:play_playlist, playlist}, state) do
-    MpdClient.Queue.clear
+    MpdClient.Queue.clear()
     MpdClient.Playlists.load(playlist)
     play()
 
@@ -97,7 +98,7 @@ defmodule Musicbox.Player do
   end
 
   def handle_info({:paracusia, event}, state) do
-    Logger.info "Unhandled mpd event: #{event}"
+    Logger.info("Unhandled mpd event: #{event}")
     {:noreply, state}
   end
 
@@ -106,9 +107,9 @@ defmodule Musicbox.Player do
   end
 
   defp fetch_player_status do
-    {:ok, status} = MpdClient.Status.status
-    {:ok, current_song} = MpdClient.Status.current_song
-    {:ok, queue} = MpdClient.Queue.songs_info
+    {:ok, status} = MpdClient.Status.status()
+    {:ok, current_song} = MpdClient.Status.current_song()
+    {:ok, queue} = MpdClient.Queue.songs_info()
 
     %{
       status: status,
@@ -124,17 +125,18 @@ defmodule Musicbox.Player do
   end
 
   defp get_playlists do
-    {:ok, playlists} = MpdClient.Playlists.list_all
+    {:ok, playlists} = MpdClient.Playlists.list_all()
 
     playlists
     |> Enum.map(fn item ->
       id = item["playlist"]
       songs = get_playlist_songs(id)
+
       duration =
         songs
-        |> Enum.map(fn song -> song["Time"] |> Integer.parse |> elem(0) end)
-        |> Enum.sum
-      
+        |> Enum.map(fn song -> song["Time"] |> Integer.parse() |> elem(0) end)
+        |> Enum.sum()
+
       %{
         id: id,
         song_count: Enum.count(songs),
