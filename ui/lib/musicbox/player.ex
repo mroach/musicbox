@@ -230,6 +230,7 @@ defmodule Musicbox.Player do
     {:ok, songs} = MpdClient.Database.list_all_info
 
     songs
+    |> Enum.filter(&valid_song?/1)
     |> Enum.map(fn item ->
       filename = item["file"]
       duration = duration(item["duration"])
@@ -247,6 +248,9 @@ defmodule Musicbox.Player do
       }
     end)
   end
+
+  defp valid_song?(%{"duration" => _}), do: true
+  defp valid_song?(_), do: false
 
   defp get_playlist_from_song(filename) do
     {:ok, playlists} = MpdClient.Playlists.list_all
