@@ -175,8 +175,8 @@ defmodule Musicbox.Player do
 
     %{
       status: status,
-      queue: queue,
-      current_song: current_song,
+      queue: Enum.map(queue, &Musicbox.Song.from_mpd/1),
+      current_song: Musicbox.Song.from_mpd(current_song),
       playlists: get_playlists()
     }
   end
@@ -230,56 +230,22 @@ defmodule Musicbox.Player do
     songs
     |> Enum.filter(&valid_song?/1)
     |> Enum.map(fn item ->
-      filename = item["file"]
-      duration = duration(item["duration"])
-      playlists = get_playlist_from_song(filename)
-
-      %{
-        title: item["Title"],
-        album: item["Album"],
-        artist: item["Artist"],
-        duration: duration,
-        year: item["Date"],
-        filename: item["file"],
-        is_on_playlist: !Enum.empty?(playlists),
-        playlists: playlists |> Enum.map_join(",", fn item -> item["playlist"] end)
-      }
+      song = Musicbox.Song.from_mpd(item)
+      %{ song | playlists: get_playlist_from_song(song) }
     end)
   end
 
   defp valid_song?(%{"duration" => _}), do: true
   defp valid_song?(_), do: false
 
-  defp get_playlist_from_song(filename) do
+  defp get_playlist_from_song(%{path: path}) do
     {:ok, playlists} = MpdClient.Playlists.list_all
 
     playlists
     |> Enum.filter(fn item ->
-      playlist_name = item["playlist"]
-      {:ok, song_list} = MpdClient.Playlists.list(playlist_name)
-
-      search_song_on_playlist(song_list, filename)
+      {:ok, song_list} = MpdClient.Playlists.list(item["playlist"])
+      Enum.member?(song_list, path)
     end)
-  end
-
-  defp search_song_on_playlist(song_list, song) do
-    song_list
-    |> Enum.any?(fn item -> song == item end)
-  end
-
-  defp duration(seconds) when is_binary(seconds) do
-    {seconds, _} = Integer.parse(seconds)
-    duration(seconds)
-  end
-
-  defp duration(seconds) do
-    minutes = (seconds / 60)
-    minutes = minutes |> floor
-    seconds = seconds - minutes * 60
-    "#{minutes}:#{format_seconds(seconds)}"
-  end
-
-  defp format_seconds(seconds) when seconds < 60 do
-    :io_lib.format("~2..0B", [seconds]) |> to_string
+    |> Enum.map(fn playlist -> playlist["playlist"] end)
   end
 end
