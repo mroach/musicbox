@@ -2,6 +2,7 @@ defmodule Musicbox.Player do
   use GenServer
   require Logger
   alias Paracusia.MpdClient
+  alias HID.Display
 
   def start_link(opts) do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
@@ -30,6 +31,7 @@ defmodule Musicbox.Player do
   @impl true
   def init(_state) do
     Paracusia.PlayerState.subscribe(self())
+    initialize_player()
 
     # Fetch the current status from MPD as the initial player status
     state = put_player_status(%{}, fetch_player_status())
@@ -159,7 +161,12 @@ defmodule Musicbox.Player do
     {:noreply, put_player_status(state, fetch_player_status())}
   end
 
+  defp initialize_player do
+    set_volume(20)
+  end
+
   defp put_player_status(state, player_status) do
+    Display.update_player_status(player_status)
     Map.put(state, :player_status, player_status)
   end
 
