@@ -1,0 +1,2 @@
+defmodule HID do
+end
