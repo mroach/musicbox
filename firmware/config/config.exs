@@ -63,6 +63,11 @@ config :musicbox, MusicboxWeb.Endpoint,
 config :musicbox,
   music_upload_path: "/root/mpd/music/"
 
+config :power_control,
+  cpu_governor: :powersave,
+  disable_hdmi: true,
+  disable_leds: true
+
 # Import target specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 # Uncomment to use target specific configurations

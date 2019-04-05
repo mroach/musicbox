@@ -40,6 +40,7 @@
   "plug": {:hex, :plug, "1.8.0", "9d2685cb007fe5e28ed9ac27af2815bc262b7817a00929ac10f56f169f43b977", [:mix], [{:mime, "~> 1.0", [hex: :mime, repo: "hexpm", optional: false]}, {:plug_crypto, "~> 1.0", [hex: :plug_crypto, repo: "hexpm", optional: false]}, {:telemetry, "~> 0.4", [hex: :telemetry, repo: "hexpm", optional: true]}], "hexpm"},
   "plug_cowboy": {:hex, :plug_cowboy, "2.0.2", "6055f16868cc4882b24b6e1d63d2bada94fb4978413377a3b32ac16c18dffba2", [:mix], [{:cowboy, "~> 2.5", [hex: :cowboy, repo: "hexpm", optional: false]}, {:plug, "~> 1.7", [hex: :plug, repo: "hexpm", optional: false]}], "hexpm"},
   "plug_crypto": {:hex, :plug_crypto, "1.0.0", "18e49317d3fa343f24620ed22795ec29d4a5e602d52d1513ccea0b07d8ea7d4d", [:mix], [], "hexpm"},
+  "power_control": {:hex, :power_control, "0.1.0", "cd6e3e11b86e0158d0bbae7d28fb3e7d6720cbbd34401b10e84f8937aa4c7871", [:mix], [], "hexpm"},
   "ranch": {:hex, :ranch, "1.7.1", "6b1fab51b49196860b733a49c07604465a47bdb78aa10c1c16a3d199f7f8c881", [:rebar3], [], "hexpm"},
   "rc522": {:git, "https://github.com/mroach/rc522_elixir.git", "9e29e6d1689d885903a5541b59a02874aef01980", []},
   "ring_logger": {:hex, :ring_logger, "0.6.1", "568dbd9eebf26c661427de5204d8a91adaa740993f3ac5aa450257f62b6e7178", [:mix], [], "hexpm"},
