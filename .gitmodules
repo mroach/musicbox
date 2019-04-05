@@ -1,0 +1,3 @@
+[submodule "custom_rpi3"]
+	path = custom_rpi3
+	url = git@github.com:ucwaldo/custom_rpi3.git
