@@ -18,7 +18,6 @@ defmodule HID.Display do
   def update_player_status(%{status: status} = player_status) do
     update_song_name(Map.get(player_status, :current_song))
     update_play_status(status)
-    Logger.info inspect(player_status)
   end
   def update_player_status(_player_status), do: nil
 
