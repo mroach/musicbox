@@ -2,7 +2,6 @@ defmodule Musicbox.Player do
   use GenServer
   require Logger
   alias Paracusia.MpdClient
-  alias HID.Display
 
   def start_link(opts) do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
@@ -166,7 +165,6 @@ defmodule Musicbox.Player do
   end
 
   defp put_player_status(state, player_status) do
-    Display.update_player_status(player_status)
     Map.put(state, :player_status, player_status)
   end
 

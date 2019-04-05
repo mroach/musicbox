@@ -41,7 +41,6 @@ defmodule Musicbox.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:paracusia, "~> 0.2.10"},
-      {:hid, path: "../hid"},
       {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false}
