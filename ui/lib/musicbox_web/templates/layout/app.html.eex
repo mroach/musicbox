@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Musicbox</title>
+    <link href="https://cdn.materialdesignicons.com/3.5.95/css/materialdesignicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
+  </head>
+  <body>
+    <header>
+      <nav class="navbar is-white" role="navigation">
+        <div class="container">
+          <div class="navbar-brand">
+            <a href="/" class="navbar-item brand-text">Musicbox</a>
+
+            <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbar">
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
+
+          <div id="navbar" class="navbar-menu">
+            <div class="navbar-start">
+              <a class="navbar-item" href="/songs">Songs</a>
+              <a class="navbar-item" href="/playlists">Playlists</a>
+              <a class="navbar-item" href="/queue">Queue</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main role="main" class="container">
+      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+
+      <section class="player">
+        <%= live_render(@conn, MusicboxWeb.PlaybackLive) %>
+      </section>
+
+      <section>
+        <%= render @view_module, @view_template, assigns %>
+      </section>
+    </main>
+
+    <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+  </body>
+</html>

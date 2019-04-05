@@ -1,0 +1,40 @@
+@charset "utf-8";
+
+@import "~bulma/bulma";
+@import "~bulma-extensions/bulma-slider/dist/css/bulma-slider.min.css";
+
+main {
+  padding: .5rem;
+}
+
+section {
+  margin-bottom: 1rem;
+}
+
+nav.navbar {
+  border-bottom: 4px solid #276cda;
+  margin-bottom: 1rem;
+}
+
+.navbar-item.brand-text {
+  font-weight: 300;
+}
+
+a.navbar-item {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+section.player {
+  border-bottom: 1px solid lightgray;
+  padding-bottom: 10px;
+}
+
+form button,
+a.button {
+  margin-top: 20px;
+}
+
+table button.is-small {
+  padding-top: .2em;
+}

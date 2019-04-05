@@ -1,0 +1,27 @@
+<h3 class="title is-title">Songs</h3>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Album</th>
+      <th>Artist</th>
+      <th>Duration</th>
+      <th>Year</th>
+      <th>Playlists</th>
+    </tr>
+  </thead>
+
+  <%= for song <- @songs do %>
+    <tr>
+      <td><%= song.title %></td>
+      <td><%= song.album %></td>
+      <td><%= song.artist %></td>
+      <td><%= song.duration %></td>
+      <td><%= song.year %></td>
+      <td><%= song.playlists %></td>
+    </tr>
+  <% end %>
+</table>
+
+<%= link "Add Song", to: Routes.song_path(@conn, :new), class: "button" %>

@@ -1,3 +1,0 @@
-<h3 class="title is-title">Songs</h3>
-
-<%= link "Add Song", to: Routes.song_path(@conn, :new), class: "button" %>
