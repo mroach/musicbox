@@ -21,6 +21,7 @@ defmodule HID.MixProject do
   defp deps do
     [
       {:circuits_gpio, "~> 0.4.1"},
+      {:pcd_8544, git: "https://github.com/jablan/pcd_8544.git", ref: "638f3cb605ea5479bfcb3814de2125492fba250a"}
     ]
   end
 end

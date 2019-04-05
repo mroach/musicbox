@@ -13,11 +13,8 @@ defmodule MusicboxWeb.SongsLive do
         <table class="table">
           <thead>
             <tr>
-              <th>Title</th>
-              <th>Album</th>
-              <th>Artist</th>
+              <th>Song</th>
               <th>Duration</th>
-              <th>Year</th>
               <th>On a Playlist?</th>
               <th>Playlists</th>
               <th>Quick Add</th>
@@ -26,13 +23,10 @@ defmodule MusicboxWeb.SongsLive do
 
           <%= for song <- @songs do %>
             <tr>
-              <td><%= song.title %></td>
-              <td><%= song.album %></td>
-              <td><%= song.artist %></td>
-              <td><%= song.duration %></td>
-              <td><%= song.year %></td>
+              <td><%= Musicbox.Song.description(song) %></td>
+              <td><%= Musicbox.Song.duration(song) %></td>
               <td style="text-align: center;">
-                <%= if song.is_on_playlist do %>
+                <%= if Musicbox.Song.on_a_playlist?(song) do %>
                   <span class="icon has-text-success">
                     <i class="mdi mdi-24px mdi-check-circle" aria-hidden="true"></i>
                   </span>
@@ -45,7 +39,7 @@ defmodule MusicboxWeb.SongsLive do
               <td><%= song.playlists %></td>
               <td>
                 <form phx-change="quick-add">
-                  <input name="song" id="song" type="hidden" value="<%= song.filename %>" />
+                  <input name="song" id="song" type="hidden" value="<%= song.path %>" />
                   <select name="playlist" id="playlist">
                     <option value="" selected>-- Select a Playlist --</option>
                     <%= for playlist <- @playlists do %>
@@ -88,21 +82,5 @@ defmodule MusicboxWeb.SongsLive do
 
   defp put_status(socket) do
     assign(socket, songs: Player.list_songs, playlists: Player.list_playlists)
-  end
-
-  defp duration(seconds) when is_binary(seconds) do
-    {seconds, _} = Integer.parse(seconds)
-    duration(seconds)
-  end
-
-  defp duration(seconds) do
-    minutes = (seconds / 60)
-    minutes = minutes |> floor
-    seconds = seconds - minutes * 60
-    "#{minutes}:#{format_seconds(seconds)}"
-  end
-
-  defp format_seconds(seconds) when seconds < 60 do
-    :io_lib.format("~2..0B", [seconds]) |> to_string
   end
 end

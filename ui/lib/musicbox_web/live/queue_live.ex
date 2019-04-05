@@ -10,8 +10,8 @@ defmodule MusicboxWeb.QueueLive do
       <table class="table">
       <%= for song <- @player.queue do %>
         <tr class="<%= if playing?(song, @player.current_song), do: "is-selected" %>">
-          <td><%= song_description(song) %></td>
-          <td><%= duration(song["Time"]) %></td>
+          <td><%= Musicbox.Song.description(song) %></td>
+          <td><%= Musicbox.Song.duration(song) %></td>
         </tr>
       <% end %>
       </table>
@@ -39,31 +39,6 @@ defmodule MusicboxWeb.QueueLive do
     assign(socket, player: Player.status())
   end
 
-  defp playing?(song, current_song) do
-    song["Id"] == current_song["Id"]
-  end
-
-  defp song_description(%{"Artist" => artist, "Title" => title}) do
-    "#{artist} - #{title}"
-  end
-
-  defp song_description(%{"Title" => title}), do: title
-  defp song_description(%{"file" => file}), do: file
-  defp song_description(what), do: inspect(what)
-
-  defp duration(seconds) when is_binary(seconds) do
-    {seconds, _} = Integer.parse(seconds)
-    duration(seconds)
-  end
-
-  defp duration(seconds) do
-    minutes = (seconds / 60)
-    minutes = minutes |> floor
-    seconds = seconds - minutes * 60
-    "#{minutes}:#{format_seconds(seconds)}"
-  end
-
-  defp format_seconds(seconds) when seconds < 60 do
-    :io_lib.format("~2..0B", [seconds]) |> to_string
-  end
+  defp playing?(%{id: id1}, %{id: id2}) when id2 > 0 and id1 == id2, do: true
+  defp playing?(_, _), do: false
 end

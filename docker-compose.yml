@@ -17,19 +17,19 @@ services:
 
   webpack:
     build:
-      context: app
+      context: ui
       dockerfile: Dockerfile.webpack
     command: yarn run watch
     volumes:
-      - "./app:/app"
+      - "./ui:/app"
       - "static:/app/priv/static"
       - webpack_modules:/app/assets/node_modules
 
-  app:
+  ui:
     build:
-      context: app
+      context: ui
       target: phoenix_base
-    command: mix phx.server
+    command: mix do deps.get, phx.server
     ports:
       - "8001:8000"
     environment:
@@ -38,7 +38,7 @@ services:
       MPD_PORT: 6600
       LIVE_VIEW_SIGNING_SALT: "o+kavMBBDleckrFlKcFZ9IJCyzn2PSfI"
     volumes:
-      - ./app/:/app
+      - ./ui/:/app
       - "static:/app/priv/static"
       - ./mpd/music:/media/music
     depends_on:

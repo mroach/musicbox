@@ -37,7 +37,7 @@ defmodule MusicboxWeb.PlaybackLive do
             <em>Nothing playing</em>
           <% else %>
             <em>Currently playing:</em>
-            <div><%= song_description @player.current_song %></div>
+            <div><%= Musicbox.Song.description(@player.current_song) %></div>
           <% end %>
         </div>
       </div>
@@ -92,30 +92,6 @@ defmodule MusicboxWeb.PlaybackLive do
   defp play_pause_icon(:play), do: "pause"
   defp play_pause_icon(:pause), do: "play"
   defp play_pause_icon(:stop), do: "play"
-
-  defp song_description(%{"Artist" => artist, "Title" => title}) do
-    "#{artist} - #{title}"
-  end
-
-  defp song_description(%{"Title" => title}), do: title
-  defp song_description(%{"file" => file}), do: file
-  defp song_description(nil), do: ""
-
-  defp duration(seconds) when is_binary(seconds) do
-    {seconds, _} = Integer.parse(seconds)
-    duration(seconds)
-  end
-
-  defp duration(seconds) do
-    minutes = (seconds / 60)
-    minutes = minutes |> floor
-    seconds = seconds - minutes * 60
-    "#{minutes}:#{format_seconds(seconds)}"
-  end
-
-  defp format_seconds(seconds) when seconds < 60 do
-    :io_lib.format("~2..0B", [seconds]) |> to_string
-  end
 
   defp set_player_volume(volume) do
     case Integer.parse(volume) do

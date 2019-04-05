@@ -12,7 +12,8 @@ defmodule HID.Application do
       HID.Buttons.PlayPause,
       HID.Buttons.PreviousTrack,
       HID.Buttons.NextTrack,
-      HID.Buttons.Shuffle
+      HID.Buttons.Shuffle,
+      HID.Display
     ]
 
     opts = [strategy: :one_for_one, name: HID.Supervisor]

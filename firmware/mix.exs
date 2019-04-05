@@ -4,7 +4,8 @@ defmodule Firmware.MixProject do
   @all_targets [:rpi, :rpi0, :rpi2, :rpi3, :rpi3a, :bbb, :x86_64, :custom_rpi3]
 
   def project do
-    [ app: :firmware,
+    [
+      app: :firmware,
       version: "0.1.0",
       elixir: "~> 1.8",
       archives: [nerves_bootstrap: "~> 1.5"],
@@ -26,7 +27,7 @@ defmodule Firmware.MixProject do
   def application do
     [
       mod: {Firmware, []},
-      extra_applications: [:logger, :runtime_tools, :audio]
+      extra_applications: [:logger, :runtime_tools, :audio, :power_control]
     ]
   end
 
@@ -41,6 +42,7 @@ defmodule Firmware.MixProject do
       {:nerves_runtime, "~> 0.6", targets: @all_targets},
       {:nerves_init_gadget, "~> 0.4", targets: @all_targets},
 
+      {:power_control, "~> 0.1.0"},
       {:audio, path: "../audio"},
       {:musicbox, path: "../ui"},
       {:rfid, path: "../rfid"},
@@ -54,7 +56,7 @@ defmodule Firmware.MixProject do
       {:nerves_system_rpi3, "~> 1.6", runtime: false, targets: :rpi3},
       {:nerves_system_rpi3a, "~> 1.6", runtime: false, targets: :rpi3a},
       {:nerves_system_bbb, "~> 2.0", runtime: false, targets: :bbb},
-      {:nerves_system_x86_64, "~> 1.6", runtime: false, targets: :x86_64},
+      {:nerves_system_x86_64, "~> 1.6", runtime: false, targets: :x86_64}
     ]
   end
 end
