@@ -68,7 +68,7 @@ $ git clone ... your_custom_rpi3
 $ cd your_custom_rpi3
 ```
 
-2) Rename the main module name of your customized target system in `mix.exs` and comment out the artifact section so we don't try to download an artifact that does not exist yet. The [official docs](https://hexdocs.pm/nerves/systems.html#customizing-your-own-nerves-system) are providing great step by step explanations for this. To follow these steps is crucial as otherwise you will keep building firmware from one of the official base systems and not your customized one.
+2) Rename the main module name of your customized target system in `mix.exs` and comment out the artifact section so we don't try to download an artifact that does not exist yet. The [official docs](https://hexdocs.pm/nerves/systems.html#customizing-your-own-nerves-system) are providing a great step by step explanations for this. **Following these steps is crucial** as otherwise you will keep building firmware from one of the official base systems and not your customized one.
 
 
 3) Set your new mix target and start the nerves system shell
@@ -87,7 +87,7 @@ $ mix nerves.system.shell
 ```
 
 That will save the configuration to `nerves_defconfig` and your system is ready to be archived in a locally cached artifact. This takes about half an hour, but ideally, you'll have to do it only once :)  
-The official docs give more information on configuring the linux kernel as well as busybox, the bash-like environment of a nerves system.
+The official docs give more information on [configuring the linux kernel](https://hexdocs.pm/nerves/systems.html#buildroot-package-configuration) as well as [busybox](https://www.busybox.net/), a collection of unix utilities that is bundled with the nerves system.
 
 5) Build the artifact
 
