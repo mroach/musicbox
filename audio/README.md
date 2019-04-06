@@ -1,21 +1,13 @@
 # Audio
 
-**TODO: Add description**
+Audio is a small but important component to the `musicbox` that handles and supervises the startup of `mpd` on firmware boot. Additionally, it initializes the alsa driver by setting the correct audio device as well as a base mixer volume.
 
-## Installation
+##### Audio.Mpd
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `audio` to your list of dependencies in `mix.exs`:
+Will attempt to start and restart `mpd` in case it crashes. It opens an Elixir `Port` that is supervised and kept in state. Note that `Audio.Mpd` is not started when running `musicbox` on your host machine, as its start-up command is very system dependent and not yet configurable. For local development we suggest running an instance of mpd within docker or directly on your host machine.  
+The module will also attempt to create the default directory structure that our mpd configuration expects. That can be found in `./firmware/rootfs_overlay/etc/mpd.conf`
 
-```elixir
-def deps do
-  [
-    {:audio, "~> 0.1.0"}
-  ]
-end
-```
+##### Audio.Alsa
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/audio](https://hexdocs.pm/audio).
-
+Wraps alsa initialization in a [Task](https://hexdocs.pm/elixir/Task.html) that sets the alsa **audio device** as well as an initial **mixer volume level**.
+For the moment it's a "fire and forget" system command and can be improved by not relying on the sleep until the audio devices are ready on the target device. It would be great to find a way to await the availability of system services via nerves, but for now we'll have to work with retries.
