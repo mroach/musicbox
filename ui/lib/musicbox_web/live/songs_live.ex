@@ -43,7 +43,7 @@ defmodule MusicboxWeb.SongsLive do
                   <select name="playlist" id="playlist">
                     <option value="" selected>-- Select a Playlist --</option>
                     <%= for playlist <- @playlists do %>
-                      <option value="<%= playlist.id %>"><%= playlist.id %></option>
+                      <option value="<%= playlist.id %>"><%= playlist.name %></option>
                     <% end %>
                   </select>
                 </form>

@@ -35,16 +35,16 @@ defmodule MusicboxWeb.PlaylistsLive do
                     <input name="id" type="hidden" value="<%= playlist.id %>">
                     <div class="field has-addons">
                       <div class="control">
-                        <input name="name" autocomplete="off" class="input" />
+                        <input name="name" autocomplete="off" class="input" placeholder="<%= playlist.name %>" />
                       </div>
                       <div class="control">
-                        <button class="button" type="submit">Rename playlist</button>
+                        <button class="button" type="submit">Update name</button>
                       </div>
                     </div>
                   </form>
                 <% else %>
                   <button phx-click="edit_playlist_name" value="<%= playlist.id %>" class="button">
-                    <%= playlist.id %>
+                    <%= playlist.name %>
                   </button>
                 <% end %>
               </td>

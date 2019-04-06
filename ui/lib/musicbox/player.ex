@@ -225,6 +225,7 @@ defmodule Musicbox.Player do
 
       %{
         id: id,
+        name: maybe_display_name(id),
         song_count: Enum.count(songs),
         duration: duration,
         songs: get_playlist_songs(id)
@@ -254,7 +255,7 @@ defmodule Musicbox.Player do
       {:ok, song_list} = MpdClient.Playlists.list(item["playlist"])
       Enum.member?(song_list, path)
     end)
-    |> Enum.map(fn playlist -> playlist["playlist"] end)
+    |> Enum.map(fn playlist -> maybe_display_name(playlist["playlist"]) end)
   end
 
   defp set_playlist_name(id, name) do
@@ -276,5 +277,19 @@ defmodule Musicbox.Player do
 
   defp new_playlist_name(id, name) do
     "#" <> id <> " - " <> name
+  end
+
+  defp maybe_display_name(name) do
+    case String.starts_with?(name, "#") do
+      true -> extract_playlist_name(name)
+      _ -> name
+    end
+  end
+
+  defp extract_playlist_name(name) do
+    case Regex.run(~r/(?<= - ).*$/, name) do
+      [h] -> h
+      _ -> name
+    end
   end
 end
