@@ -27,6 +27,7 @@ defmodule MusicboxWeb.Router do
     live("/playback", PlaybackLive)
     live("/playlists", PlaylistsLive)
     live("/queue", QueueLive)
+    live("/system", SystemLive)
   end
 
   # Other scopes may use custom stacks.
@@ -34,7 +35,7 @@ defmodule MusicboxWeb.Router do
   #   pipe_through :api
   # end
 
-  scope "/system", MusicboxWeb do
+  scope "/_system", MusicboxWeb do
     get "/alive", SystemController, :alive
     get "/stats", SystemController, :stats
   end
