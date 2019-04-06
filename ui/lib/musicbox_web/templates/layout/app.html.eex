@@ -28,6 +28,10 @@
               <a class="navbar-item" href="/playlists">Playlists</a>
               <a class="navbar-item" href="/queue">Queue</a>
             </div>
+
+            <div class="navbar-end">
+              <a class="navbar-item" href="/system">System</a>
+            </div>
           </div>
         </div>
       </nav>
