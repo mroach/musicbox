@@ -55,8 +55,8 @@ defmodule SystemInfo do
 
   def processor_model do
     cpu_info()
-    |> Enum.at(0)
-    |> Map.get("model name")
+    |> Enum.at(0, %{})
+    |> Map.get("model name", "")
   end
 
   def cpu_info do
