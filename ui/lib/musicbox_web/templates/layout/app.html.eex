@@ -34,11 +34,13 @@
     </header>
 
     <main role="main" class="container">
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-
       <section class="player">
         <%= live_render(@conn, MusicboxWeb.PlaybackLive) %>
+      </section>
+
+      <section>
+        <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+        <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
       </section>
 
       <section>

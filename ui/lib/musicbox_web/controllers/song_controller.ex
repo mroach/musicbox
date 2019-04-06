@@ -19,18 +19,22 @@ defmodule MusicboxWeb.SongController do
     |> put_flash(:info, "Upload complete")
     |> redirect(to: "/songs")
   end
+  def create(conn, _) do
+    conn
+    |> put_flash(:error, "Please choose at lease one mp3 file to upload")
+    |> render("new.html")
+  end
 
   defp handle_upload(files) when is_list(files) do
-    upload_path = Application.get_env(:musicbox, :music_upload_path)
-
-    files
-    |> Enum.each(fn file ->
-      File.cp(file.path, "#{upload_path}#{file.filename}")
-    end)
-
+    for file <- files, do: copy_to_music_directory(file)
     Player.update_database
 
     :ok
   end
   defp handle_upload(file), do: handle_upload([file])
+
+  defp copy_to_music_directory(file) do
+    upload_path = Application.get_env(:musicbox, :music_upload_path)
+    File.cp!(file.path, upload_path <> file.filename)
+  end
 end

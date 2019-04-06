@@ -55,7 +55,9 @@ config :musicbox, MusicboxWeb.Endpoint,
   url: [host: "nerves-musicbox.local", port: 80],
   secret_key_base: "HEY05EB1dFVSu6KykKHuS4rQPQzSHv4F7mGVB/gnDLrIu75wE/ytBXy2TaL3A6RA",
   root: Path.dirname(__DIR__),
-  live_view: [signing_salt: System.get_env("PHOENIX_LIVE_SALT")],
+  live_view: [
+    signing_salt: System.get_env("LIVE_VIEW_SIGNING_SALT")
+  ],
   server: true,
   render_errors: [view: MusicboxWeb.ErrorView, accepts: ~w(html json)],
   code_reloader: false

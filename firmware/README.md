@@ -1,7 +1,10 @@
 ## Firmware
 
-This is the firmware provider of musicbox. It is a nerves app that bundles and configures dependencies (poncho-style) and eventually boots on given hardware [target](https://hexdocs.pm/nerves/targets.html#supported-targets-and-systems).
-The firmware uses a customized system configuration of nerves that builds `mpd`, `sqlite` and other audio related dependencies to the firmware image and will make them available via operating system commands or the elixir [Port](https://hexdocs.pm/elixir/Port.html) module.  
+This is the firmware provider of `musicbox`. It is a nerves app that bundles and configures dependencies (poncho-style) and eventually boots on given hardware [target](https://hexdocs.pm/nerves/targets.html#supported-targets-and-systems).
+The firmware uses a customized system configuration of nerves that builds `mpd`, `sqlite` and other audio related dependencies to the firmware image.  
+The included system services will be included in the image and can be controlled via operating system commands (`:os.cmd/1`) or the elixir [Port](https://hexdocs.pm/elixir/Port.html) module.  
+
+##### Getting started
 
 Checkout the `custom_rpi3` submodule that is a fork of the [base Nerves System configuration for the Raspberry Pi 3 Model B](https://github.com/nerves-project/nerves_system_rpi3) and fetch its dependencies.
 
@@ -11,7 +14,7 @@ $ cd custom_rpi3
 $ mix deps.get
 ```
 
-This downloads the released artifact which is required once for creating the firmware image.
+This downloads the released artifact which is required for creating the firmware image.
 
 <hr />
 
@@ -23,7 +26,7 @@ $ mix deps.get
 $ export MIX_TARGET=custom_rpi3
 $ export NERVES_NETWORK_SSID=networkname
 $ export NERVES_NETWORK_PSK=networkpass
-$ export PHOENIX_LIVE_SALT=O2q2Vdcd
+$ export LIVE_VIEW_SIGNING_SALT=O2q2Vdcd
 ```
 
 To create the firmware image:
