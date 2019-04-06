@@ -6,7 +6,8 @@
     <%= file_input f, :file, multiple: true, accept: ".mp3" %>
   </div>
 
-  <div>
+  <!-- lols until we change something here -->
+  <div style="margin-top: 20px;">
     <%= submit "Submit", class: "button is-primary" %>
   </div>
 <% end %>

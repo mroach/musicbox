@@ -29,16 +29,27 @@ defmodule MusicboxWeb.PlaylistsLive do
                   </span>
                 </button>
               </td>
-              <td><%= playlist.id %></td>
+              <td>
+                <%= if @edit_playlist == playlist.id do %>
+                  <form phx-submit="set_playlist_name">
+                    <input name="id" type="hidden" value="<%= playlist.id %>">
+                    <div class="field has-addons">
+                      <div class="control">
+                        <input name="name" autocomplete="off" class="input" />
+                      </div>
+                      <div class="control">
+                        <button class="button" type="submit">Rename playlist</button>
+                      </div>
+                    </div>
+                  </form>
+                <% else %>
+                  <button phx-click="edit_playlist_name" value="<%= playlist.id %>" class="button">
+                    <%= playlist.id %>
+                  </button>
+                <% end %>
+              </td>
               <td><%= playlist.song_count %></td>
               <td><%= duration playlist.duration %></td>
-              <td>
-                <form phx-submit="set_playlist_name">
-                  <input name="id" type="hidden" value="<%= playlist.id %>">
-                  <input name="name" autocomplete="off"/>
-                  <button type="submit">Submit</button>
-                </form>
-              </td>
             </tr>
           <% end %>
         </table>
@@ -48,10 +59,13 @@ defmodule MusicboxWeb.PlaylistsLive do
 
   def mount(_session, socket) do
     if connected?(socket), do: :timer.send_interval(10_000, self(), :tick)
-
     Player.subscribe(self())
 
-    {:ok, put_status(socket)}
+    socket = socket
+    |> put_status()
+    |> set_edit_playlist()
+
+    {:ok, socket}
   end
 
   def handle_info(:tick, socket) do
@@ -69,6 +83,13 @@ defmodule MusicboxWeb.PlaylistsLive do
     {:noreply, socket}
   end
 
+  def handle_event("edit_playlist_name", playlist, socket) when is_binary(playlist) do
+    {:noreply, set_edit_playlist(socket, playlist)}
+  end
+  def handle_event("edit_playlist_name", _, socket) do
+    {:noreply, socket}
+  end
+
   def handle_event("set_playlist_name", playlist, socket) do
     Player.rename_playlist(playlist)
     {:noreply, socket}
@@ -76,6 +97,17 @@ defmodule MusicboxWeb.PlaylistsLive do
 
   defp put_status(socket) do
     assign(socket, player: Player.status())
+  end
+
+  defp set_edit_playlist(socket) do
+    assign(socket, edit_playlist: nil)
+  end
+
+  defp set_edit_playlist(socket, playlist) when is_binary(playlist) do
+    assign(socket, edit_playlist: playlist)
+  end
+  defp set_edit_playlist(socket, _playlist) do
+    assign(socket, edit_playlist: nil)
   end
 
   defp duration(seconds) when is_binary(seconds) do

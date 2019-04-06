@@ -121,7 +121,7 @@ defmodule Musicbox.Player do
   end
 
   def handle_call({:rename_playlist, %{"id" => id, "name" => name}}, _from, state) do
-    {id, playlist_name} = new_playlist_name(id, name)
+    {id, playlist_name} = set_playlist_name(id, name)
 
     MpdClient.Playlists.rename(id, playlist_name)
     {:reply, playlist_name, state}
@@ -257,7 +257,7 @@ defmodule Musicbox.Player do
     |> Enum.map(fn playlist -> playlist["playlist"] end)
   end
 
-  defp new_playlist_name(id, name) do
+  defp set_playlist_name(id, name) do
     new_name = case String.starts_with?(id, "#") do
       true -> rename_changed_playlist(id, name)
       false -> new_playlist_name(id, name)
