@@ -32,6 +32,13 @@ defmodule MusicboxWeb.PlaylistsLive do
               <td><%= playlist.id %></td>
               <td><%= playlist.song_count %></td>
               <td><%= duration playlist.duration %></td>
+              <td>
+                <form phx-submit="set_playlist_name">
+                  <input name="id" type="hidden" value="<%= playlist.id %>">
+                  <input name="name" autocomplete="off"/>
+                  <button type="submit">Submit</button>
+                </form>
+              </td>
             </tr>
           <% end %>
         </table>
@@ -59,6 +66,11 @@ defmodule MusicboxWeb.PlaylistsLive do
   def handle_event("play_playlist", playlist, socket) do
     Logger.debug("Playing playlist #{playlist}")
     Player.play_playlist(playlist)
+    {:noreply, socket}
+  end
+
+  def handle_event("set_playlist_name", playlist, socket) do
+    Player.rename_playlist(playlist)
     {:noreply, socket}
   end
 

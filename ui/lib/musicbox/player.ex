@@ -22,6 +22,7 @@ defmodule Musicbox.Player do
   def list_playlists, do: GenServer.call(__MODULE__, {:list_playlists})
   def shuffle, do: GenServer.cast(__MODULE__, {:shuffle})
   def create_playlist(name), do: GenServer.call(__MODULE__, {:create_playlist, name})
+  def rename_playlist(playlist), do: GenServer.call(__MODULE__, {:rename_playlist, playlist})
   def volume_up(step \\ 5), do: GenServer.call(__MODULE__, {:volume_up, step})
   def volume_down(step \\ 5), do: GenServer.call(__MODULE__, {:volume_down, step})
   def volume, do: GenServer.call(__MODULE__, {:current_volume})
@@ -117,6 +118,13 @@ defmodule Musicbox.Player do
     info = MpdClient.Playlists.list_info(name)
 
     {:reply, info, state}
+  end
+
+  def handle_call({:rename_playlist, %{"id" => id, "name" => name}}, _from, state) do
+    {id, playlist_name} = new_playlist_name(id, name)
+
+    MpdClient.Playlists.rename(id, playlist_name)
+    {:reply, playlist_name, state}
   end
 
   def handle_call({:current_volume}, _from, state) do
@@ -231,7 +239,7 @@ defmodule Musicbox.Player do
     |> Enum.filter(&valid_song?/1)
     |> Enum.map(fn item ->
       song = Musicbox.Song.from_mpd(item)
-      %{ song | playlists: get_playlist_from_song(song) }
+      %{song | playlists: get_playlist_from_song(song)}
     end)
   end
 
@@ -247,5 +255,26 @@ defmodule Musicbox.Player do
       Enum.member?(song_list, path)
     end)
     |> Enum.map(fn playlist -> playlist["playlist"] end)
+  end
+
+  defp new_playlist_name(id, name) do
+    new_name = case String.starts_with?(id, "#") do
+      true -> rename_changed_playlist(id, name)
+      false -> new_playlist_name(id, name)
+    end
+
+    {id, new_name}
+  end
+
+  defp rename_changed_playlist(old_name, new_name) do
+    [id | _] = String.split(old_name)
+
+    id
+    |> String.slice(1..-1)
+    |> new_playlist_name(new_name)
+  end
+
+  defp new_playlist_name(id, name) do
+    "#" <> id <> " - " <> name
   end
 end
