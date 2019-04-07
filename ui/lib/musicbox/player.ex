@@ -124,7 +124,7 @@ defmodule Musicbox.Player do
     {old_name, new_name} = set_playlist_name(id, name)
 
     MpdClient.Playlists.rename(old_name, new_name)
-    {:reply, playlist_name, state}
+    {:reply, new_name, state}
   end
 
   def handle_call({:current_volume}, _from, state) do
