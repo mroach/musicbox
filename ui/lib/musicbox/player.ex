@@ -121,9 +121,9 @@ defmodule Musicbox.Player do
   end
 
   def handle_call({:rename_playlist, %{"id" => id, "name" => name}}, _from, state) do
-    {id, playlist_name} = set_playlist_name(id, name)
+    {old_name, new_name} = set_playlist_name(id, name)
 
-    MpdClient.Playlists.rename(id, playlist_name)
+    MpdClient.Playlists.rename(old_name, new_name)
     {:reply, playlist_name, state}
   end
 
@@ -166,6 +166,11 @@ defmodule Musicbox.Player do
   @impl true
   def handle_info({:paracusia, _message}, state) do
     {:noreply, put_player_status(state, fetch_player_status())}
+  end
+
+  def playlist_information(playlist) do
+    re = ~r/\A(?<id>\d+)(?:\W+(?<name>.+))?\z/
+    Regex.named_captures(re, playlist)
   end
 
   defp initialize_player do
@@ -225,7 +230,7 @@ defmodule Musicbox.Player do
 
       %{
         id: id,
-        name: maybe_display_name(id),
+        name: maybe_playlist_name(id),
         song_count: Enum.count(songs),
         duration: duration,
         songs: get_playlist_songs(id)
@@ -255,41 +260,29 @@ defmodule Musicbox.Player do
       {:ok, song_list} = MpdClient.Playlists.list(item["playlist"])
       Enum.member?(song_list, path)
     end)
-    |> Enum.map(fn playlist -> maybe_display_name(playlist["playlist"]) end)
+    |> Enum.map(fn playlist -> maybe_playlist_name(playlist["playlist"]) end)
   end
 
-  defp set_playlist_name(id, name) do
-    new_name = case String.starts_with?(id, "#") do
-      true -> rename_changed_playlist(id, name)
-      false -> new_playlist_name(id, name)
+  defp set_playlist_name(old_name, name) do
+    new_name = case playlist_information(old_name) do
+      %{"id" => id} -> new_playlist_name(id, name)
+      _ -> nil
     end
 
-    {id, new_name}
+    {old_name, new_name}
   end
 
-  defp rename_changed_playlist(old_name, new_name) do
-    [id | _] = String.split(old_name)
-
-    id
-    |> String.slice(1..-1)
-    |> new_playlist_name(new_name)
-  end
-
+  defp new_playlist_name(id, ""), do: id
   defp new_playlist_name(id, name) do
-    "#" <> id <> " - " <> name
+    "#{id} - #{name}"
   end
 
-  defp maybe_display_name(name) do
-    case String.starts_with?(name, "#") do
-      true -> extract_playlist_name(name)
-      _ -> name
-    end
-  end
 
-  defp extract_playlist_name(name) do
-    case Regex.run(~r/(?<= - ).*$/, name) do
-      [h] -> h
-      _ -> name
+  defp maybe_playlist_name(name) do
+    case playlist_information(name) do
+      %{"id" => id, "name" => ""} -> id
+      %{"name" => name} -> name
+      _ -> nil
     end
   end
 end
