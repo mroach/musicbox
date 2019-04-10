@@ -4,11 +4,6 @@ services:
   mpd:
     build:
       context: mpd
-    devices:
-      - "/dev/snd:/dev/snd"
-    ports:
-      - "6600:6600"
-      - "8060:8000"
     volumes:
       - ./mpd/music:/mpd/music
       - ./mpd/conf:/mpd/conf

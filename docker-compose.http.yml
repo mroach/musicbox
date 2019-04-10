@@ -1,0 +1,7 @@
+version: "3.6"
+
+services:
+  mpd:
+    command: "mpd --no-daemon --stdout /mpd/conf/mpd.http.conf"
+    ports:
+      - "8060:8000"
