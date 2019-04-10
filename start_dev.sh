@@ -18,4 +18,4 @@ elif [[ $output == "http" ]]; then
 fi
 echo "-------------------------------------------------------------------------"
 
-docker-compose -f docker-compose.yml -f docker-compose.${output}.conf up
+docker-compose -f docker-compose.yml -f docker-compose.${output}.yml up
