@@ -30,13 +30,20 @@ This application is Dockerized. With Docker and docker-compose installed:
 
 ```shell
 docker-compose build
-docker-compose run --rm app mix deps.get
 ```
 
 ### Start development environment
 
+On Linux we can mount `/dev/snd` in the Docker container and mpd can directly
+use our host system's sound output.
+
+macOS doesn't have `/dev/snd` or ALSA, so we configure mpd to output via an HTTP/Shoutcast
+server. Then on our macOS host we can use iTunes or VLC to connect to the stream.
+
+Use `start_env.sh` to automatically pick the correct configuration.
+
 ```shell
-docker-compose up
+./start_env.sh
 ```
 
 Put any music files you want into `mpd/music` and they'll be detected automatically by mpd.
