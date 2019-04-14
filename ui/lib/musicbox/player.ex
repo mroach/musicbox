@@ -22,6 +22,7 @@ defmodule Musicbox.Player do
   def list_playlists, do: GenServer.call(__MODULE__, {:list_playlists})
   def shuffle, do: GenServer.cast(__MODULE__, {:shuffle})
   def create_playlist(name), do: GenServer.call(__MODULE__, {:create_playlist, name})
+  def rename_playlist(playlist), do: GenServer.call(__MODULE__, {:rename_playlist, playlist})
   def volume_up(step \\ 5), do: GenServer.call(__MODULE__, {:volume_up, step})
   def volume_down(step \\ 5), do: GenServer.call(__MODULE__, {:volume_down, step})
   def volume, do: GenServer.call(__MODULE__, {:current_volume})
@@ -119,6 +120,13 @@ defmodule Musicbox.Player do
     {:reply, info, state}
   end
 
+  def handle_call({:rename_playlist, %{"id" => id, "name" => name}}, _from, state) do
+    {old_name, new_name} = set_playlist_name(id, name)
+
+    MpdClient.Playlists.rename(old_name, new_name)
+    {:reply, new_name, state}
+  end
+
   def handle_call({:current_volume}, _from, state) do
     {:reply, current_volume(), state}
   end
@@ -158,6 +166,11 @@ defmodule Musicbox.Player do
   @impl true
   def handle_info({:paracusia, _message}, state) do
     {:noreply, put_player_status(state, fetch_player_status())}
+  end
+
+  def playlist_information(playlist) do
+    re = ~r/\A(?<id>\d+)(?:\W+(?<name>.+))?\z/
+    Regex.named_captures(re, playlist)
   end
 
   defp initialize_player do
@@ -217,6 +230,7 @@ defmodule Musicbox.Player do
 
       %{
         id: id,
+        name: maybe_playlist_name(id),
         song_count: Enum.count(songs),
         duration: duration,
         songs: get_playlist_songs(id)
@@ -231,7 +245,7 @@ defmodule Musicbox.Player do
     |> Enum.filter(&valid_song?/1)
     |> Enum.map(fn item ->
       song = Musicbox.Song.from_mpd(item)
-      %{ song | playlists: get_playlist_from_song(song) }
+      %{song | playlists: get_playlist_from_song(song)}
     end)
   end
 
@@ -246,6 +260,29 @@ defmodule Musicbox.Player do
       {:ok, song_list} = MpdClient.Playlists.list(item["playlist"])
       Enum.member?(song_list, path)
     end)
-    |> Enum.map(fn playlist -> playlist["playlist"] end)
+    |> Enum.map(fn playlist -> maybe_playlist_name(playlist["playlist"]) end)
+  end
+
+  defp set_playlist_name(old_name, name) do
+    new_name = case playlist_information(old_name) do
+      %{"id" => id} -> new_playlist_name(id, name)
+      _ -> nil
+    end
+
+    {old_name, new_name}
+  end
+
+  defp new_playlist_name(id, ""), do: id
+  defp new_playlist_name(id, name) do
+    "#{id} - #{name}"
+  end
+
+
+  defp maybe_playlist_name(name) do
+    case playlist_information(name) do
+      %{"id" => id, "name" => ""} -> id
+      %{"name" => name} -> name
+      _ -> nil
+    end
   end
 end

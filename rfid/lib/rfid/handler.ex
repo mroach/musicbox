@@ -24,10 +24,8 @@ defmodule RFID.Handler do
   end
 
   defp extract_tag_id(playlist) do
-    ~r/\A(?<tag_id>\d+)/
-    |> Regex.named_captures(playlist)
-    |> case do
-      %{"tag_id" => tag_id} -> tag_id
+    case Musicbox.Player.playlist_information(playlist) do
+      %{"id" => id} -> id
       _ -> nil
     end
   end
